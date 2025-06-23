@@ -2,19 +2,45 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        int[] array = new int[10000];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = i;
+        }
 
         for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i] + ", ");
+            // System.out.print(array[i] + ", ");
         }
+
         System.out.println("");
         array = scramble(array);
+
         for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i] + ", ");
+            // System.out.print(array[i] + ", ");
+        }
+
+        System.out.println("");
+        long startTime = System.currentTimeMillis();
+        array = insertionSort(array);
+        for (int i = 0; i < array.length; i++) {
+            // System.out.print(array[i] + ", ");
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Time took = " + (endTime - startTime));
+            array = scramble(array);
+        long bubbleStartTime = System.currentTimeMillis();
+        array = sort(array);
+        long bubbleEndTime = System.currentTimeMillis();
+        System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
+        System.out.println();
+        if ((bubbleEndTime - bubbleStartTime) < (endTime - startTime)) {
+            System.out.println("Bubble sort is " + ((endTime - startTime) - (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
+        } else {
+            System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime) - (endTime - startTime)) + " milliseconds faster.");
         }
     }
 
-    public static void sort(int[] array) {
+    public static int[] sort(int[] array) {
         int temp;
         for (int j = 0; j < array.length; j++) {
             for (int i = 0; i < array.length - 1; i++) {
@@ -25,10 +51,8 @@ public class Main {
                 }
             }
         }
-        for (int c = 0; c < array.length; c++) {
-            System.out.print(array[c]);
-        }
-        System.out.println();
+        return array;
+
     }
 
     public static int check(int[] array, int start, int end, int number) {
@@ -53,7 +77,19 @@ public class Main {
             int lastNumber = array[i];
             array[i] = array[currentNumber];
             array[currentNumber] = lastNumber;
-       }
+        }
+        return array;
+    }
+
+    public static int[] insertionSort(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i; j > 0 && array[j] < array[j - 1]; j--) {
+                int storage = array[j - 1];
+                array[j - 1] = array[j];
+                array[j] = storage;
+            }
+        }
+
         return array;
     }
 }
