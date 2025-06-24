@@ -2,27 +2,27 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[10000];
+        int[] array = new int[8];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
 
         for (int i = 0; i < array.length; i++) {
-            // System.out.print(array[i] + ", ");
+           // System.out.print(array[i] + ", ");
         }
 
         System.out.println("");
-        array = scramble(array);
+        //array = scramble(array);
 
         for (int i = 0; i < array.length; i++) {
-            // System.out.print(array[i] + ", ");
+            System.out.print(array[i] + ", ");
         }
 
         System.out.println("");
         long startTime = System.currentTimeMillis();
-        array = insertionSort(array);
+        array = mergeSort(array);
         for (int i = 0; i < array.length; i++) {
-            // System.out.print(array[i] + ", ");
+            //System.out.print(array[i] + ", ");
         }
 
         long endTime = System.currentTimeMillis();
@@ -90,6 +90,35 @@ public class Main {
             }
         }
 
+        return array;
+    }
+    public static int[] selectionSort(int[] array) {
+        int storage = -1;
+        int storageLocation = 0;
+        for (int x = 0; x < array.length - 1; x++){
+        for (int i = 0; i < array.length - (x + 1); i++) {
+            if (array[i] > array[i + 1]) {
+                if (array[i] > storage) {
+                storage = array[i];
+                storageLocation = i;
+
+                }
+            }
+        }
+        int temp = array[array.length - (x + 1)];
+        array[array.length - (x + 1)] = storage;
+        array[storageLocation] = temp;
+        storage = -1;
+        }
+        return array;
+    }
+
+    public static int[] mergeSort(int[] array) {
+        int[] secondHalf = new int[array.length - 1];
+        for () {
+            secondHalf[i] = array[i];
+            System.out.print(secondHalf[i]);
+        }
         return array;
     }
 }
