@@ -2,17 +2,17 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[8];
+        int[] array = new int[4];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
 
         for (int i = 0; i < array.length; i++) {
-           // System.out.print(array[i] + ", ");
+            // System.out.print(array[i] + ", ");
         }
 
         System.out.println("");
-        //array = scramble(array);
+        // array = scramble(array);
 
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
@@ -20,23 +20,25 @@ public class Main {
 
         System.out.println("");
         long startTime = System.currentTimeMillis();
-        array = mergeSort(array);
+        array = mergeSortSplit(array);
         for (int i = 0; i < array.length; i++) {
-            //System.out.print(array[i] + ", ");
+            System.out.print(array[i] + ", ");
         }
 
         long endTime = System.currentTimeMillis();
-        System.out.println("Time took = " + (endTime - startTime));
-            array = scramble(array);
+        // System.out.println("Time took = " + (endTime - startTime));
+        array = scramble(array);
         long bubbleStartTime = System.currentTimeMillis();
         array = sort(array);
         long bubbleEndTime = System.currentTimeMillis();
-        System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
+        // System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
         System.out.println();
         if ((bubbleEndTime - bubbleStartTime) < (endTime - startTime)) {
-            System.out.println("Bubble sort is " + ((endTime - startTime) - (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
+            // System.out.println("Bubble sort is " + ((endTime - startTime) -
+            // (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
         } else {
-            System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime) - (endTime - startTime)) + " milliseconds faster.");
+            // System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime)
+            // - (endTime - startTime)) + " milliseconds faster.");
         }
     }
 
@@ -92,33 +94,77 @@ public class Main {
 
         return array;
     }
+
     public static int[] selectionSort(int[] array) {
         int storage = -1;
         int storageLocation = 0;
-        for (int x = 0; x < array.length - 1; x++){
-        for (int i = 0; i < array.length - (x + 1); i++) {
-            if (array[i] > array[i + 1]) {
-                if (array[i] > storage) {
-                storage = array[i];
-                storageLocation = i;
+        for (int x = 0; x < array.length - 1; x++) {
+            for (int i = 0; i < array.length - (x + 1); i++) {
+                if (array[i] > array[i + 1]) {
+                    if (array[i] > storage) {
+                        storage = array[i];
+                        storageLocation = i;
 
+                    }
                 }
             }
-        }
-        int temp = array[array.length - (x + 1)];
-        array[array.length - (x + 1)] = storage;
-        array[storageLocation] = temp;
-        storage = -1;
+            int temp = array[array.length - (x + 1)];
+            array[array.length - (x + 1)] = storage;
+            array[storageLocation] = temp;
+            storage = -1;
         }
         return array;
     }
 
-    public static int[] mergeSort(int[] array) {
-        int[] secondHalf = new int[array.length - 1];
-        for () {
-            secondHalf[i] = array[i];
-            System.out.print(secondHalf[i]);
+    public static int[] mergeSortSplit(int[] array) {
+        int[] firstHalf = new int[array.length / 2];
+        for (int i = 0; i < (array.length / 2); i++) {
+            firstHalf[i] = array[i];
         }
+        int[] secondHalf = new int[array.length / 2];
+        for (int i = (array.length / 2); i < array.length; i++) {
+            secondHalf[i - (array.length / 2)] = array[i];
+        }
+        if (secondHalf.length > 1) {
+            secondHalf = mergeSortSplit(secondHalf);
+        }
+        if (firstHalf.length > 1) {
+            firstHalf = mergeSortSplit(firstHalf);
+        }
+        array = mergeSort(firstHalf, secondHalf);
         return array;
+    }
+
+    public static int[] mergeSort(int[] arrayOne, int[] arrayTwo) {
+        int[] finalArray = new int[arrayOne.length + arrayTwo.length];
+        int finalPointer = finalArray.length - 1;
+        int arr1Pointer = arrayOne.length - 1;
+        int arr2Pointer = arrayTwo.length - 1;
+        while (finalPointer > -1) {
+            if (arr1Pointer == -1 || arr2Pointer == -1) {
+            } else
+            if (arrayOne[arr1Pointer] > arrayTwo[arr2Pointer]) {
+                finalArray[finalPointer] = arrayOne[arr1Pointer];
+                arr1Pointer--;
+            } else if (!(arr2Pointer == -1)) {
+                finalArray[finalPointer] = arrayTwo[arr2Pointer];
+                arr2Pointer--;
+            }
+            finalPointer--;
+        }
+        for (int i = 0; i < arrayOne.length; i++) {
+            System.out.print("This is array one:" + arrayOne[i]);
+        }
+        System.out.println();
+        for (int i = 0; i < arrayTwo.length; i++) {
+            System.out.print("This is array two:" + arrayTwo[i]);
+        }
+        System.out.println();
+        System.out.println("This is final array:");
+        for (int i = 0; i < finalArray.length; i++) {
+            System.out.print(finalArray[i]);
+        }
+        System.out.println();
+        return finalArray;
     }
 }
