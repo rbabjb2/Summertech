@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[6];
+        int[] array = new int[5];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
@@ -12,7 +12,7 @@ public class Main {
         }
 
         System.out.println("");
-         array = scramble(array);
+        //array = scramble(array);
 
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
@@ -20,7 +20,7 @@ public class Main {
 
         System.out.println("");
         long startTime = System.currentTimeMillis();
-        array = bogoSort(array);
+        array = quickSort(array);
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
         }
@@ -31,12 +31,14 @@ public class Main {
         long bubbleStartTime = System.currentTimeMillis();
         array = sort(array);
         long bubbleEndTime = System.currentTimeMillis();
-       //System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
-        //System.out.println();
+        // System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
+        // System.out.println();
         if ((bubbleEndTime - bubbleStartTime) < (endTime - startTime)) {
-            //System.out.println("Bubble sort is " + ((endTime - startTime) - (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
+            // System.out.println("Bubble sort is " + ((endTime - startTime) -
+            // (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
         } else {
-            //System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime) - (endTime - startTime)) + " milliseconds faster.");
+            // System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime)
+            // - (endTime - startTime)) + " milliseconds faster.");
         }
     }
 
@@ -120,9 +122,9 @@ public class Main {
         for (int i = 0; i < (array.length / 2); i++) {
             firstHalf[i] = array[i];
         }
-        if (array.length % 2 == 1 ) {
+        if (array.length % 2 == 1) {
             size = (array.length / 2) + 1;
-        } else  {
+        } else {
             size = array.length / 2;
         }
         int[] secondHalf = new int[size];
@@ -170,5 +172,35 @@ public class Main {
             }
         }
         return array;
+    }
+
+    public static int[] quickSort(int[] array) {
+        Random random = new Random();
+        int pos = random.nextInt(array.length);
+        System.out.println(pos);
+        int[] storage = new int[array.length];
+        int smallAdditions = 0;
+        int bigAdditions = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (!(i == pos)) {
+                if (array[i] < array[pos]) {
+                    storage[smallAdditions] = array[i];
+                    smallAdditions++;
+                } else {
+                    storage[array.length - bigAdditions - 1] = array[i];
+                    bigAdditions++;
+                }
+            }
+        }
+        storage[smallAdditions] = array[pos];
+        int[] bigPile = new int[bigAdditions];
+        int[] smallPile = new int[smallAdditions];
+        for (int i = 0; i < bigPile.length - 1; i++) {
+            bigPile[i] = storage[storage.length - i - 1];
+        }
+        for (int i = 0; i < smallPile.length - 1; i++) {
+            smallPile[i] = storage[i];
+        }
+        return storage;
     }
 }
