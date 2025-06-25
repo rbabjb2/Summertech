@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[9];
+        int[] array = new int[6];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
@@ -20,25 +20,23 @@ public class Main {
 
         System.out.println("");
         long startTime = System.currentTimeMillis();
-        array = mergeSortSplit(array);
+        array = bogoSort(array);
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
         }
 
         long endTime = System.currentTimeMillis();
-        // System.out.println("Time took = " + (endTime - startTime));
+        System.out.println("Time took = " + (endTime - startTime));
         array = scramble(array);
         long bubbleStartTime = System.currentTimeMillis();
         array = sort(array);
         long bubbleEndTime = System.currentTimeMillis();
-        // System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
-        System.out.println();
+       //System.out.println("Time took = " + (bubbleEndTime - bubbleStartTime));
+        //System.out.println();
         if ((bubbleEndTime - bubbleStartTime) < (endTime - startTime)) {
-            // System.out.println("Bubble sort is " + ((endTime - startTime) -
-            // (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
+            //System.out.println("Bubble sort is " + ((endTime - startTime) - (bubbleEndTime - bubbleStartTime)) + " milliseconds faster.");
         } else {
-            // System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime)
-            // - (endTime - startTime)) + " milliseconds faster.");
+            //System.out.println("Insertion sort is " + ((bubbleEndTime - bubbleStartTime) - (endTime - startTime)) + " milliseconds faster.");
         }
     }
 
@@ -163,5 +161,14 @@ public class Main {
             finalPointer--;
         }
         return finalArray;
+    }
+
+    public static int[] bogoSort(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            if (array[i - 1] > array[i]) {
+                array = bogoSort(scramble(array));
+            }
+        }
+        return array;
     }
 }
