@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        int[] array = new int[4];
+        int[] array = new int[9];
         for (int i = 0; i < array.length; i++) {
             array[i] = i;
         }
@@ -12,7 +12,7 @@ public class Main {
         }
 
         System.out.println("");
-        // array = scramble(array);
+         array = scramble(array);
 
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
@@ -118,10 +118,16 @@ public class Main {
 
     public static int[] mergeSortSplit(int[] array) {
         int[] firstHalf = new int[array.length / 2];
+        int size;
         for (int i = 0; i < (array.length / 2); i++) {
             firstHalf[i] = array[i];
         }
-        int[] secondHalf = new int[array.length / 2];
+        if (array.length % 2 == 1 ) {
+            size = (array.length / 2) + 1;
+        } else  {
+            size = array.length / 2;
+        }
+        int[] secondHalf = new int[size];
         for (int i = (array.length / 2); i < array.length; i++) {
             secondHalf[i - (array.length / 2)] = array[i];
         }
@@ -141,9 +147,13 @@ public class Main {
         int arr1Pointer = arrayOne.length - 1;
         int arr2Pointer = arrayTwo.length - 1;
         while (finalPointer > -1) {
-            if (arr1Pointer == -1 || arr2Pointer == -1) {
-            } else
-            if (arrayOne[arr1Pointer] > arrayTwo[arr2Pointer]) {
+            if (arr1Pointer == -1) {
+                finalArray[finalPointer] = arrayTwo[arr2Pointer];
+                arr2Pointer--;
+            } else if (arr2Pointer == -1) {
+                finalArray[finalPointer] = arrayOne[arr1Pointer];
+                arr1Pointer--;
+            } else if (arrayOne[arr1Pointer] > arrayTwo[arr2Pointer]) {
                 finalArray[finalPointer] = arrayOne[arr1Pointer];
                 arr1Pointer--;
             } else if (!(arr2Pointer == -1)) {
@@ -152,19 +162,6 @@ public class Main {
             }
             finalPointer--;
         }
-        for (int i = 0; i < arrayOne.length; i++) {
-            System.out.print("This is array one:" + arrayOne[i]);
-        }
-        System.out.println();
-        for (int i = 0; i < arrayTwo.length; i++) {
-            System.out.print("This is array two:" + arrayTwo[i]);
-        }
-        System.out.println();
-        System.out.println("This is final array:");
-        for (int i = 0; i < finalArray.length; i++) {
-            System.out.print(finalArray[i]);
-        }
-        System.out.println();
         return finalArray;
     }
 }
