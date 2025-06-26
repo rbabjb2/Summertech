@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
@@ -12,7 +13,7 @@ public class Main {
         }
 
         System.out.println("");
-        // array = scramble(array);
+        array = scramble(array);
 
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + ", ");
@@ -174,7 +175,7 @@ public class Main {
         return array;
     }
 
-    public static int[] quickSort(int[] array, int start, int end) {
+    public static int[] quickSort1(int[] array, int start, int end) {
         Random random = new Random();
         int pos = random.nextInt(end - start) + start;
         System.out.println(pos);
@@ -194,12 +195,49 @@ public class Main {
         }
         storage[smallAdditions] = array[pos];
         if (smallAdditions > 1) {
-            storage = quickSort(storage, 0, smallAdditions);
-        } 
+            storage = quickSort1(storage, 0, smallAdditions);
+        }
         if (bigAdditions > 1) {
-            storage = quickSort(storage, smallAdditions + 1, array.length);
+            storage = quickSort1(storage, smallAdditions + 1, array.length);
         }
         return storage;
 
+    }
+
+    public static int[] quickSort(int[] array, int start, int end) {
+        int[] storage = array.clone();
+        int smallPos = start;
+        int bigPos = end - 1;
+        for (int i = start + 1; i < end; i++) {
+            if (array[i] < array[start]) {
+                storage[smallPos] = array[i];
+                smallPos++;
+            } else {
+                storage[bigPos] = array[i];
+                bigPos--;
+            }
+        }
+        storage[smallPos] = array[start];
+        if (smallPos > 2) {
+            storage = quickSort(storage, start, smallPos);
+            System.out.println("After Sorting Small Pile:" + Arrays.toString(storage));
+        } else if (smallPos == 2) {
+            if (storage[start] > storage[start + 1]) {
+                int temp = storage[start + 1];
+                storage[start + 1] = storage[start];
+                storage[start] = temp;
+            }
+        }
+        System.out.println(Arrays.toString(storage));
+        if (bigPos < (end - 3)) {
+            storage = quickSort(storage, bigPos, end);
+        } else if (bigPos == (end - 3)) {
+            if (storage[end - 2] > storage[end - 1]) {
+                int temp = storage[end - 2];
+                storage[end - 2] = storage[end - 1];
+                storage[end - 1] = temp;
+            }
+        }
+        return storage;
     }
 }
