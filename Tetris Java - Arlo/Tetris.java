@@ -2,27 +2,39 @@ import javax.swing.*;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 public class Tetris extends JFrame implements KeyListener {
     static JPanel panel = new JPanel();
     static JLabel label = new JLabel();
     static JFrame frame = new JFrame("Screen");
     static int screenSizeY = 10;
-    static int screenSizeX = 8;
-    static block currentBlock = new block();
+    static int screenSizeX = 10;
+    static block[] blockArray = new block[5];
     static String[][] screen = new String[screenSizeX][screenSizeY];
     static boolean gameOver = false;
+    static Random random = new Random();
+    static String dropType = "default";
+    static String nextBlock;
     
-        public Tetris() {
-                super();
-                frame.addKeyListener(this);
-                frame.setFocusable(true);
-                frame.requestFocus();
-        }
+    public Tetris() {
+        super();
+        frame.addKeyListener(this);
+        frame.setFocusable(true);
+        frame.requestFocus();
+    }
+
     public static void main(String[] args) {
+        for (int i = 1; i < 5; i++) {
+            blockArray[i] = new block();
+            blockArray[i].setBlockNumber(i);
+        }
+        dropType = "default";
         new Tetris();
         String borderChar = "X";
-        currentBlock.screenSizeSet(screenSizeX, screenSizeY);
+        for (int i = 1; i < 5; i++) {
+            blockArray[i].screenSizeSet(screenSizeX, screenSizeY);
+        }
 
         for (int y = 0; y < screenSizeY; y++) {
             for (int x = 0; x < screenSizeX; x++) {
@@ -40,32 +52,78 @@ public class Tetris extends JFrame implements KeyListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.add(panel);
+        String[] possibleBlocks = new String[] { "line", "cube", "l", "j", "z", "s" };
+        nextBlock = possibleBlocks[random.nextInt(3)];
         printScreen();
-        screen[4][8] = "#";
-        screen[currentBlock.posX][currentBlock.posY] = "#";
-        printScreen();
+        for (int i = 1; i < 5; i++) {
+            blockArray[i].reset(nextBlock);
+            screen[blockArray[i].posX][blockArray[i].posY] = "#";
 
+        }
+        printScreen();
+        nextBlock = possibleBlocks[random.nextInt(3)];
         while (gameOver == false) {
-            while (screen[currentBlock.posX][currentBlock.posY + 1] == " ") {
-                screen[currentBlock.posX][currentBlock.posY] = " ";
-                currentBlock.move("down");
-                if (currentBlock.posY == 0) {
-                    gameOver = true;
+
+            while ((blockArray[1].isBottom == false || screen[blockArray[1].posX][blockArray[1].posY + 1] == " ")
+                    && (blockArray[2].isBottom == false || screen[blockArray[2].posX][blockArray[2].posY + 1] == " ")
+                    && (blockArray[3].isBottom == false || screen[blockArray[3].posX][blockArray[3].posY + 1] == " ")
+                    && (blockArray[4].isBottom == false || screen[blockArray[4].posX][blockArray[4].posY + 1] == " ")) {
+                screen[blockArray[1].posX][blockArray[1].posY] = " ";
+                screen[blockArray[2].posX][blockArray[2].posY] = " ";
+                screen[blockArray[3].posX][blockArray[3].posY] = " ";
+                screen[blockArray[4].posX][blockArray[4].posY] = " ";
+
+                blockArray[1].move("down");
+                blockArray[2].move("down");
+                blockArray[3].move("down");
+                blockArray[4].move("down");
+
+                screen[blockArray[1].posX][blockArray[1].posY] = "#";
+                screen[blockArray[2].posX][blockArray[2].posY] = "#";
+                screen[blockArray[3].posX][blockArray[3].posY] = "#";
+                screen[blockArray[4].posX][blockArray[4].posY] = "#";
+
+                if (dropType == "default") {
+                    printScreen();
+                    makeLabels();
+                    try {
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(650);
+                    } catch (InterruptedException temp) {
+                        temp.printStackTrace();
+                    }
+                } else if (dropType == "hard") {
+                    try {
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(50);
+                    } catch (InterruptedException temp) {
+                        temp.printStackTrace();
+                    }
+                    // Runs when hard dropping.
+                } else {
+                    System.out.println("Please check the drop type variable.");
+                    System.exit(0);
                 }
-                screen[currentBlock.posX][currentBlock.posY] = "#";
-                printScreen();
-                makeLabels();
-                try {
-                    java.util.concurrent.TimeUnit.MILLISECONDS.sleep(750);
-                } catch (InterruptedException temp) {
-                    temp.printStackTrace();
-                }
-                
+
+            }
+            dropType = "default";
+            if (blockArray[1].posY == 0) {
+                gameOver = true;
+                System.out.println("Game Over!");
+                System.exit(0);
             }
             lineClearDetect();
-            currentBlock.reset("square");
-            screen[currentBlock.posX][currentBlock.posY] = "#";
+            blockArray[1].reset(nextBlock);
+            blockArray[2].reset(nextBlock);
+            blockArray[3].reset(nextBlock);
+            blockArray[4].reset(nextBlock);
+            nextBlock = possibleBlocks[random.nextInt(3)];
+            // nextBlock = "cube";
+            screen[blockArray[1].posX][blockArray[1].posY] = "#";
+            screen[blockArray[2].posX][blockArray[2].posY] = "#";
+            screen[blockArray[3].posX][blockArray[3].posY] = "#";
+            screen[blockArray[4].posX][blockArray[4].posY] = "#";
+            printScreen();
         }
+
     }
 
     public static void makeLabels() {
@@ -77,10 +135,12 @@ public class Tetris extends JFrame implements KeyListener {
             }
             arrayToString = arrayToString + "<br>";
         }
-        arrayToString = arrayToString + "</pre></html>";
+        arrayToString = arrayToString + "Next block is " + nextBlock + "</pre></html>";
         label.setBounds(50, 50, 1000, 50);
         label.setText(arrayToString);
         panel.add(label);
+        panel.revalidate();
+        panel.repaint();
     }
 
     public static void printScreen() {
@@ -91,56 +151,93 @@ public class Tetris extends JFrame implements KeyListener {
             }
             System.out.println();
         }
+        System.out.println("Next block is " + nextBlock);
     }
 
     public static void lineClearDetect() {
-        boolean run = true;
-        for (int i = 1; i < screenSizeX - 1 && run == true; i++) {
-            if (screen[i][currentBlock.posY] == " ") {
-                run = false;
+        for (int b = 1; b < 5; b++) {
+            boolean run = true;
+            for (int i = 1; i < screenSizeX - 1 && run == true; i++) {
+                if (screen[i][blockArray[b].posY] == " ") {
+                    run = false;
+                }
             }
-        }
-        if (run == true) {
-            for (int i = 1; i < screenSizeX - 1; i++) {
-                for (int y = currentBlock.posY; y > 0; y--) {
-                    screen[i][y] = screen[i][y - 1];
+            if (run == true) {
+                for (int i = 1; i < screenSizeX - 1; i++) {
+                    for (int y = blockArray[b].posY; y > 0; y--) {
+                        if (blockArray[b].posX == i && blockArray[b].posY == y) {
+                            System.out.println("Clearing Line.");
+                            System.out.println(screen[i][y - 1]);
+                        }
+                        screen[i][y] = screen[i][y - 1];
+                    }
                 }
             }
         }
     }
-        @Override
+
+    @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_A:
-            if (screen[currentBlock.posX - 1][currentBlock.posY] == " ") {
-            screen[currentBlock.posX][currentBlock.posY] = " ";
-            currentBlock.move("left");
-            screen[currentBlock.posX][currentBlock.posY] = "#";
-            makeLabels();
-            printScreen();
-            }
-            break;
+                if ((blockArray[1].isLeft == false || screen[blockArray[1].posX - 1][blockArray[1].posY] == " ")
+                        && (blockArray[2].isLeft == false || screen[blockArray[2].posX - 1][blockArray[2].posY] == " ")
+                        && (blockArray[3].isLeft == false || screen[blockArray[3].posX - 1][blockArray[3].posY] == " ")
+                        && (blockArray[4].isLeft == false
+                                || screen[blockArray[4].posX - 1][blockArray[4].posY] == " ")) {
+                    screen[blockArray[1].posX][blockArray[1].posY] = " ";
+                    screen[blockArray[2].posX][blockArray[2].posY] = " ";
+                    screen[blockArray[3].posX][blockArray[3].posY] = " ";
+                    screen[blockArray[4].posX][blockArray[4].posY] = " ";
+                    blockArray[1].move("left");
+                    blockArray[2].move("left");
+                    blockArray[3].move("left");
+                    blockArray[4].move("left");
+                    screen[blockArray[1].posX][blockArray[1].posY] = "#";
+                    screen[blockArray[2].posX][blockArray[2].posY] = "#";
+                    screen[blockArray[3].posX][blockArray[3].posY] = "#";
+                    screen[blockArray[4].posX][blockArray[4].posY] = "#";
+                    makeLabels();
+                    printScreen();
+                }
+                break;
             case KeyEvent.VK_D:
-            if (screen[currentBlock.posX + 1][currentBlock.posY] == " ") {
-                screen[currentBlock.posX][currentBlock.posY] = " ";
-                currentBlock.move("right");
-                screen[currentBlock.posX][currentBlock.posY] = "#";
-                makeLabels();
-                printScreen();
-            }
+                if ((blockArray[1].isRight == false || screen[blockArray[1].posX + 1][blockArray[1].posY] == " ")
+                        && (blockArray[2].isRight == false || screen[blockArray[2].posX + 1][blockArray[2].posY] == " ")
+                        && (blockArray[3].isRight == false || screen[blockArray[3].posX + 1][blockArray[3].posY] == " ")
+                        && (blockArray[4].isRight == false
+                                || screen[blockArray[4].posX + 1][blockArray[4].posY] == " ")) {
+                    screen[blockArray[1].posX][blockArray[1].posY] = " ";
+                    screen[blockArray[2].posX][blockArray[2].posY] = " ";
+                    screen[blockArray[3].posX][blockArray[3].posY] = " ";
+                    screen[blockArray[4].posX][blockArray[4].posY] = " ";
+                    blockArray[1].move("right");
+                    blockArray[2].move("right");
+                    blockArray[3].move("right");
+                    blockArray[4].move("right");
+                    screen[blockArray[1].posX][blockArray[1].posY] = "#";
+                    screen[blockArray[2].posX][blockArray[2].posY] = "#";
+                    screen[blockArray[3].posX][blockArray[3].posY] = "#";
+                    screen[blockArray[4].posX][blockArray[4].posY] = "#";
+                    makeLabels();
+                    printScreen();
+                }
+                break;
+            case KeyEvent.VK_W:
+                dropType = "hard";
         }
-        
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
+
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
-        
-        
+
     }
 
 }
