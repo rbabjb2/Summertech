@@ -1,3 +1,5 @@
+import org.json.*;
+
 public class block {
     private String blockType;
     public int blockNumber;
@@ -8,6 +10,7 @@ public class block {
     public boolean isBottom;
     public boolean isLeft;
     public boolean isRight;
+
 
     public void reset(String type) {
         this.blockType = type;
@@ -92,10 +95,105 @@ public class block {
             }
 
         } else if (this.blockType.equalsIgnoreCase("j")) {
+            if (blockNumber == 1) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 0;
+                isLeft = true;
+                isBottom = true;
+            } else if (blockNumber == 2) {
+                this.posX = (screenSizeX / 2);
+                this.posY = 0;
+                isBottom = true;
+            } else if (blockNumber == 3) {
+                this.posX = screenSizeX / 2 + 1;
+                this.posY = 0;
+                isRight = true;
+            } else if (blockNumber == 4) {
+                this.posX = (screenSizeX / 2) + 1;
+                this.posY = 1;
+                isBottom = true;
+                isRight = true;
+                isLeft = true;
+            } else {
+                System.out.println("For some reason block number = " + blockNumber);
+                System.exit(0);
+            }
 
         } else if (this.blockType.equalsIgnoreCase("s")) {
+            if (blockNumber == 1) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 0;
+                isLeft = true;
+            } else if (blockNumber == 2) {
+                this.posX = (screenSizeX / 2);
+                this.posY = 0;
+                isBottom = true;
+                isRight = true;
+            } else if (blockNumber == 3) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 1;
+                isRight = true;
+                isBottom = true;
+            } else if (blockNumber == 4) {
+                this.posX = (screenSizeX / 2) - 2;
+                this.posY = 1;
+                isBottom = true;
+
+                isLeft = true;
+            } else {
+                System.out.println("For some reason block number = " + blockNumber);
+                System.exit(0);
+            }
 
         } else if (this.blockType.equalsIgnoreCase("z")) {
+            if (blockNumber == 1) {
+                this.posX = (screenSizeX / 2) - 2;
+                this.posY = 0;
+                isLeft = true;
+                isBottom = true;
+            } else if (blockNumber == 2) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 0;
+            } else if (blockNumber == 3) {
+                this.posX = screenSizeX / 2;
+                this.posY = 0;
+                isRight = true;
+                isBottom = true;
+            } else if (blockNumber == 4) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 1;
+                isBottom = true;
+                isRight = true;
+                isLeft = true;
+            } else {
+                System.out.println("For some reason block number = " + blockNumber);
+                System.exit(0);
+            }
+
+        } else if (blockType.equalsIgnoreCase("t")) {
+            if (blockNumber == 1) {
+                this.posX = (screenSizeX / 2) - 1;
+                this.posY = 0;
+                isLeft = true;
+                isBottom = true;
+            } else if (blockNumber == 2) {
+                this.posX = (screenSizeX / 2);
+                this.posY = 0;
+                isRight = true;
+            } else if (blockNumber == 3) {
+                this.posX = screenSizeX / 2;
+                this.posY = 1;
+                isLeft = true;
+                isBottom = true;
+            } else if (blockNumber == 4) {
+                this.posX = (screenSizeX / 2) + 1;
+                this.posY = 1;
+                isBottom = true;
+                isRight = true;
+            } else {
+                System.out.println("For some reason block number = " + blockNumber);
+                System.exit(0);
+            }
 
         } else {
             System.out.println("Please check your block type, its " + blockType);
@@ -116,6 +214,11 @@ public class block {
         }
     }
 
+    public static void main(String[] args) {
+        JSONObject jsonTest = new JSONObject("blocks.json");
+        System.out.println(jsonTest.getJSONObject("jsonTest").getString("temp")
+        );
+    }
     public int[] getPos() {
         int[] pos = new int[2];
         pos[0] = this.posX;
@@ -136,11 +239,24 @@ public class block {
         isLeft = false;
         isRight = false;
         isBottom = false;
-        
+
     }
 
     public void setBlockNumber(int number) {
         blockNumber = number;
+    }
+
+    public void rotate(String dir){
+        if (this.blockType == "cube") {
+            //Do nothing if cube is rotated.
+        } else if (this.blockType == "line") {
+        } else if (this.blockType.equalsIgnoreCase("l")) {
+        } else if (this.blockType.equalsIgnoreCase("j")){
+        } else if (this.blockType.equalsIgnoreCase("s")) {
+        } else if (this.blockType.equalsIgnoreCase("z")){
+        } else if (this.blockType.equalsIgnoreCase("t")) {
+
+        }
     }
 
 }

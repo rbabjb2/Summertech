@@ -4,11 +4,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 
+// Click here when running:  
+
 public class Tetris extends JFrame implements KeyListener {
     static JPanel panel = new JPanel();
     static JLabel label = new JLabel();
     static JFrame frame = new JFrame("Screen");
-    static int screenSizeY = 10;
+    static int screenSizeY = 14;
     static int screenSizeX = 10;
     static block[] blockArray = new block[5];
     static String[][] screen = new String[screenSizeX][screenSizeY];
@@ -16,7 +18,7 @@ public class Tetris extends JFrame implements KeyListener {
     static Random random = new Random();
     static String dropType = "default";
     static String nextBlock;
-    
+
     public Tetris() {
         super();
         frame.addKeyListener(this);
@@ -31,7 +33,7 @@ public class Tetris extends JFrame implements KeyListener {
         }
         dropType = "default";
         new Tetris();
-        String borderChar = "X";
+        String borderChar = "|";
         for (int i = 1; i < 5; i++) {
             blockArray[i].screenSizeSet(screenSizeX, screenSizeY);
         }
@@ -41,7 +43,7 @@ public class Tetris extends JFrame implements KeyListener {
                 if (x == screenSizeX - 1 || x == 0) {
                     screen[x][y] = borderChar;
                 } else if (y == screenSizeY - 1) {
-                    screen[x][y] = borderChar;
+                    screen[x][y] = "=";
                 } else {
                     screen[x][y] = " ";
                 }
@@ -52,16 +54,16 @@ public class Tetris extends JFrame implements KeyListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.add(panel);
-        String[] possibleBlocks = new String[] { "line", "cube", "l", "j", "z", "s" };
-        nextBlock = possibleBlocks[random.nextInt(3)];
+        String[] possibleBlocks = new String[] { "line", "cube", "l", "j", "s", "z", "t" };
+        nextBlock = possibleBlocks[random.nextInt(7)];
         printScreen();
         for (int i = 1; i < 5; i++) {
-            blockArray[i].reset(nextBlock);
-            screen[blockArray[i].posX][blockArray[i].posY] = "#";
+            blockArray[i].reset("cube");
+            screen[blockArray[i].posX][blockArray[i].posY] = "X";
 
         }
         printScreen();
-        nextBlock = possibleBlocks[random.nextInt(3)];
+        nextBlock = possibleBlocks[random.nextInt(7)];
         while (gameOver == false) {
 
             while ((blockArray[1].isBottom == false || screen[blockArray[1].posX][blockArray[1].posY + 1] == " ")
@@ -78,10 +80,10 @@ public class Tetris extends JFrame implements KeyListener {
                 blockArray[3].move("down");
                 blockArray[4].move("down");
 
-                screen[blockArray[1].posX][blockArray[1].posY] = "#";
-                screen[blockArray[2].posX][blockArray[2].posY] = "#";
-                screen[blockArray[3].posX][blockArray[3].posY] = "#";
-                screen[blockArray[4].posX][blockArray[4].posY] = "#";
+                screen[blockArray[1].posX][blockArray[1].posY] = "X";
+                screen[blockArray[2].posX][blockArray[2].posY] = "X";
+                screen[blockArray[3].posX][blockArray[3].posY] = "X";
+                screen[blockArray[4].posX][blockArray[4].posY] = "X";
 
                 if (dropType == "default") {
                     printScreen();
@@ -98,6 +100,14 @@ public class Tetris extends JFrame implements KeyListener {
                         temp.printStackTrace();
                     }
                     // Runs when hard dropping.
+                } else if (dropType == "soft") {
+                    printScreen();
+                    makeLabels();
+                    try {
+                        java.util.concurrent.TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException temp) {
+                        temp.printStackTrace();
+                    }
                 } else {
                     System.out.println("Please check the drop type variable.");
                     System.exit(0);
@@ -115,12 +125,12 @@ public class Tetris extends JFrame implements KeyListener {
             blockArray[2].reset(nextBlock);
             blockArray[3].reset(nextBlock);
             blockArray[4].reset(nextBlock);
-            nextBlock = possibleBlocks[random.nextInt(3)];
-            // nextBlock = "cube";
-            screen[blockArray[1].posX][blockArray[1].posY] = "#";
-            screen[blockArray[2].posX][blockArray[2].posY] = "#";
-            screen[blockArray[3].posX][blockArray[3].posY] = "#";
-            screen[blockArray[4].posX][blockArray[4].posY] = "#";
+            nextBlock = possibleBlocks[random.nextInt(7)];
+            nextBlock = "line";
+            screen[blockArray[1].posX][blockArray[1].posY] = "X";
+            screen[blockArray[2].posX][blockArray[2].posY] = "X";
+            screen[blockArray[3].posX][blockArray[3].posY] = "X";
+            screen[blockArray[4].posX][blockArray[4].posY] = "X";
             printScreen();
         }
 
@@ -175,7 +185,6 @@ public class Tetris extends JFrame implements KeyListener {
             }
         }
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -194,10 +203,10 @@ public class Tetris extends JFrame implements KeyListener {
                     blockArray[2].move("left");
                     blockArray[3].move("left");
                     blockArray[4].move("left");
-                    screen[blockArray[1].posX][blockArray[1].posY] = "#";
-                    screen[blockArray[2].posX][blockArray[2].posY] = "#";
-                    screen[blockArray[3].posX][blockArray[3].posY] = "#";
-                    screen[blockArray[4].posX][blockArray[4].posY] = "#";
+                    screen[blockArray[1].posX][blockArray[1].posY] = "X";
+                    screen[blockArray[2].posX][blockArray[2].posY] = "X";
+                    screen[blockArray[3].posX][blockArray[3].posY] = "X";
+                    screen[blockArray[4].posX][blockArray[4].posY] = "X";
                     makeLabels();
                     printScreen();
                 }
@@ -216,23 +225,42 @@ public class Tetris extends JFrame implements KeyListener {
                     blockArray[2].move("right");
                     blockArray[3].move("right");
                     blockArray[4].move("right");
-                    screen[blockArray[1].posX][blockArray[1].posY] = "#";
-                    screen[blockArray[2].posX][blockArray[2].posY] = "#";
-                    screen[blockArray[3].posX][blockArray[3].posY] = "#";
-                    screen[blockArray[4].posX][blockArray[4].posY] = "#";
+                    screen[blockArray[1].posX][blockArray[1].posY] = "X";
+                    screen[blockArray[2].posX][blockArray[2].posY] = "X";
+                    screen[blockArray[3].posX][blockArray[3].posY] = "X";
+                    screen[blockArray[4].posX][blockArray[4].posY] = "X";
                     makeLabels();
                     printScreen();
                 }
                 break;
             case KeyEvent.VK_W:
                 dropType = "hard";
+                break;
+            case KeyEvent.VK_S:
+                dropType = "soft";
+            break;
+            case KeyEvent.VK_LEFT:
+                blockArray[1].rotate("left");
+                blockArray[2].rotate("left");
+                blockArray[3].rotate("left");
+                blockArray[4].rotate("left");
+            break;
+            case KeyEvent.VK_RIGHT:
+                blockArray[1].rotate("right");
+                blockArray[2].rotate("right");
+                blockArray[3].rotate("right");
+                blockArray[4].rotate("right");
         }
 
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        int keyCode = e.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.VK_S:
+            dropType = "default";
+        }
     }
 
     @Override
