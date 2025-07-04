@@ -51,14 +51,14 @@ public class Tetris extends JFrame implements KeyListener {
         }
         label.setFont(new Font("Monospaced", Font.BOLD, 16));
         frame.setSize(400, 400);
+        String[] possibleBlocks = new String[] { "line", "cube", "l", "j", "s", "z", "t" };
+        nextBlock = possibleBlocks[random.nextInt(7)];
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.add(panel);
-        String[] possibleBlocks = new String[] { "line", "cube", "l", "j", "s", "z", "t" };
-        nextBlock = possibleBlocks[random.nextInt(7)];
         printScreen();
         for (int i = 1; i < 5; i++) {
-            blockArray[i].reset("cube");
+            blockArray[i].reset(nextBlock);
             screen[blockArray[i].posX][blockArray[i].posY] = "X";
 
         }
@@ -126,7 +126,6 @@ public class Tetris extends JFrame implements KeyListener {
             blockArray[3].reset(nextBlock);
             blockArray[4].reset(nextBlock);
             nextBlock = possibleBlocks[random.nextInt(7)];
-            nextBlock = "line";
             screen[blockArray[1].posX][blockArray[1].posY] = "X";
             screen[blockArray[2].posX][blockArray[2].posY] = "X";
             screen[blockArray[3].posX][blockArray[3].posY] = "X";
@@ -185,6 +184,7 @@ public class Tetris extends JFrame implements KeyListener {
             }
         }
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -238,18 +238,49 @@ public class Tetris extends JFrame implements KeyListener {
                 break;
             case KeyEvent.VK_S:
                 dropType = "soft";
-            break;
+                break;
             case KeyEvent.VK_LEFT:
-                blockArray[1].rotate("left");
-                blockArray[2].rotate("left");
-                blockArray[3].rotate("left");
-                blockArray[4].rotate("left");
-            break;
-            case KeyEvent.VK_RIGHT:
-                blockArray[1].rotate("right");
-                blockArray[2].rotate("right");
-                blockArray[3].rotate("right");
-                blockArray[4].rotate("right");
+                screen[blockArray[1].posX][blockArray[1].posY] = " ";
+                screen[blockArray[2].posX][blockArray[2].posY] = " ";
+                screen[blockArray[3].posX][blockArray[3].posY] = " ";
+                screen[blockArray[4].posX][blockArray[4].posY] = " ";
+                blockArray[1].rotate();
+                blockArray[2].rotate();
+                blockArray[3].rotate();
+                blockArray[4].rotate();
+                try {
+
+                    if (screen[blockArray[1].posX][blockArray[1].posY] == " "
+                            && screen[blockArray[2].posX][blockArray[2].posY] == " "
+                            && screen[blockArray[3].posX][blockArray[3].posY] == " "
+                            && screen[blockArray[4].posX][blockArray[4].posY] == " ") {
+
+                    } else {
+                        for (int i = 0; i < 3; i++) {
+                            blockArray[1].rotate();
+                            blockArray[2].rotate();
+                            blockArray[3].rotate();
+                            blockArray[4].rotate();
+                        }
+                    }
+                } catch (ArrayIndexOutOfBoundsException joe) {
+                    for (int i = 0; i < 3; i++) {
+                        blockArray[1].rotate();
+                        blockArray[2].rotate();
+                        blockArray[3].rotate();
+                        blockArray[4].rotate();
+                    }
+                }
+                screen[blockArray[1].posX][blockArray[1].posY] = "X";
+                screen[blockArray[2].posX][blockArray[2].posY] = "X";
+                screen[blockArray[3].posX][blockArray[3].posY] = "X";
+                screen[blockArray[4].posX][blockArray[4].posY] = "X";
+                makeLabels();
+                printScreen();
+
+                break;
+            case KeyEvent.VK_ESCAPE:
+                System.exit(0);
         }
 
     }
@@ -259,7 +290,7 @@ public class Tetris extends JFrame implements KeyListener {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_S:
-            dropType = "default";
+                dropType = "default";
         }
     }
 
